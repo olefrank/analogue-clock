@@ -3,5 +3,7 @@ This is a simple analogue style clock
 
 ## Inspiration
 [http://www.kirupa.com/html5/create_an_analog_clock_using_the_canvas.htm][1]
+[http://www.kirupa.com/html5/animating_with_easing_functions_in_javascript.htm][2]
 
 [1]: http://www.kirupa.com/html5/create_an_analog_clock_using_the_canvas.htm
+[2]: http://www.kirupa.com/html5/animating_with_easing_functions_in_javascript.htm

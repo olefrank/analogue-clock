@@ -31,13 +31,16 @@ var module = (function() {
 
 	var h;
 	var h1;
+	var h11;
 	var m;
 	var m1;
+	var m11;
 	var s;
 	var s1;
+	var s11;
 
 	var iteration = 0;
-	var totalIterations = 15;
+	var totalIterations = 45;
 	var progressPct = 0;
 	var hourChanged = false;
 	var minuteChanged = false;
@@ -75,7 +78,7 @@ var module = (function() {
 			}
 
 			iteration = 0;
-			progressPct = 0;
+			progressPct = 0
 
 			// get time to displau
 			var displayTime = getFormattedDisplayTime(date);
@@ -92,21 +95,27 @@ var module = (function() {
 			// clear former clock
 			context.clearRect(0, 0, canvas.width, canvas.height);
 
-			// calculate new
+
 			if (hourChanged) {
 				h1 = h - 1 + progressPct;
+				h11 = easeInOutExpo(iteration, h, 1, totalIterations);
+				console.log("h1 ", h1);
 			}
 			if (minuteChanged) {
 				m1 = m - 1 + progressPct;
+				m11 = easeInOutExpo(iteration, m, 1, totalIterations);
+				console.log("m1 ", m1);
 			}
 			if (secondChanged) {
 				s1 = s - 1 + progressPct;
+				s11 = easeOutExpo(iteration, s, 1, totalIterations);
+				console.log("s1 ", s1);
 			}
 
 			// redraw new clock arms
-			drawArm(h1 / 12, 10, .6, 'black');
-			drawArm(m1 / 60, 5, .9, 'red');
-			drawArm(s1 / 60, 2, 1, 'blue');
+			drawArm(h11 / 12, 10, .6, 'black');
+			drawArm(m11 / 60, 5, .9, 'red');
+			drawArm(s11 / 60, 2, 1, 'blue');
 
 			requestAnimationFrame( updateDisplay );
 		}
