@@ -1,2 +1,7 @@
 # analogue-clock
 This is a simple analogue style clock
+
+## Inspiration
+[http://www.kirupa.com/html5/create_an_analog_clock_using_the_canvas.htm][1]
+
+[1]: http://www.kirupa.com/html5/create_an_analog_clock_using_the_canvas.htm
