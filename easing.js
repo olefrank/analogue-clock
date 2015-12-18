@@ -148,3 +148,9 @@ function easeInOutCirc(currentIteration, startValue, changeInValue, totalIterati
     }
     return changeInValue / 2 * (Math.sqrt(1 - (currentIteration -= 2) * currentIteration) + 1) + startValue;
 }
+
+function easeBackQuart(t, b, c, d) {
+    var ts = (t /= d) * t;
+    var tc = ts * t;
+    return b + c * (-2 * ts * ts + 10 * tc + -15 * ts + 8 * t);
+}
