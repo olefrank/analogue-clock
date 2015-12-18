@@ -2,11 +2,10 @@
 
 var module = (function() {
 
+	var display;
 	var canvas;
 	var context;
 	var clockRadius;
-	var clockX;
-	var clockY;
 	var now;
 	var requestAnimationFrame;
 	var h;
@@ -20,7 +19,6 @@ var module = (function() {
 	var hourChanged;
 	var minuteChanged;
 	var secondChanged;
-	var display;
 
 	function init() {
 		// fallback for animation function
@@ -30,22 +28,22 @@ var module = (function() {
 			window.msRequestAnimationFrame;
 
 		// set vars
+		display = document.querySelector('#current-time');
 		canvas = document.querySelector('canvas');
 		context = canvas.getContext('2d');
-		clockRadius = 100;
-		clockX = canvas.width / 2;
-		clockY = canvas.height / 2;
+		clockRadius = canvas.height / 2;
+		context.translate(clockRadius, clockRadius);
+
 		Math.TAU = 2 * Math.PI;
-		now = new Date();
+
 		iteration = 0;
 		totalIterations = 15;
 		hourChanged = false;
 		minuteChanged = false;
 		secondChanged = false;
-		display = document.querySelector('#current-time');
-
 
 		// update clock and display
+		now = new Date();
 		updateClock(now);
 		updateDisplay(now);
 
@@ -109,12 +107,10 @@ var module = (function() {
 			}
 
 			// clear former clock
-			context.clearRect(0, 0, canvas.width, canvas.height);
+			context.clearRect(-clockRadius, -clockRadius, canvas.width, canvas.height);
 
 			// redraw new clock arms
-			drawArm(ht / 12, 10, .6, 'black');
-			drawArm(mt / 60, 5, .9, 'red');
-			drawArm(st / 60, 2, 1, 'blue');
+			drawClock();
 
 			requestAnimationFrame( animateClock );
 			iteration++;
@@ -124,16 +120,66 @@ var module = (function() {
 	function drawArm(progress, weight, length, color) {
 		var armRadians = (Math.TAU * progress) - (Math.TAU / 4);
 		var armLength = clockRadius * length;
-		var targetX = clockX + Math.cos(armRadians) * armLength;
-		var targetY = clockY + Math.sin(armRadians) * armLength;
+		var targetX = Math.cos(armRadians) * armLength;
+		var targetY = Math.sin(armRadians) * armLength;
 
 		context.lineWidth = weight;
+		context.lineCap = "round";
 		context.strokeStyle = color;
 
 		context.beginPath();
-		context.moveTo(clockX, clockY);
+		context.moveTo(0, 0);
 		context.lineTo(targetX, targetY);
 		context.stroke();
+	}
+
+	function drawClock() {
+		drawFace(context, clockRadius);
+		drawNumbers(context, clockRadius);
+
+		drawArm(ht / 12, 9, .4, 'black');
+		drawArm(mt / 60, 9, .6, 'black');
+		drawArm(st / 60, 2, .8, 'black');
+	}
+
+	function drawFace(ctx, radius) {
+		radius = radius * .95;
+
+		// white bg
+		ctx.beginPath();
+		ctx.arc(0, 0, radius, 0, 2 * Math.PI);
+		ctx.fillStyle = 'floralwhite';
+		ctx.fill();
+
+		// border
+		ctx.lineWidth = radius * 0.06;
+		ctx.stroke();
+
+		// center
+		ctx.beginPath();
+		ctx.arc(0, 0, 6, 0, 2 * Math.PI);
+		ctx.fillStyle = '#333';
+		ctx.fill();
+	}
+
+	function drawNumbers(ctx, radius) {
+		var ang;
+		var num;
+
+		ctx.font = radius * 0.15 + "px arial";
+		ctx.textBaseline = "middle";
+		ctx.textAlign = "center";
+
+		for (num = 1; num <= 12; num++){
+			ang = num * Math.PI / 6;
+			ctx.rotate(ang);
+			ctx.translate(0, -radius * 0.8);
+			ctx.rotate(-ang);
+			ctx.fillText(num.toString(), 0, 0);
+			ctx.rotate(ang);
+			ctx.translate(0, radius * 0.8);
+			ctx.rotate(-ang);
+		}
 	}
 
 	function startTimer() {
