@@ -136,6 +136,7 @@ var module = (function() {
 	function drawClock() {
 		drawFace(context, clockRadius);
 		drawNumbers(context, clockRadius);
+		drawSeconds(context, clockRadius);
 
 		drawArm(ht / 12, 9, .4, 'black');
 		drawArm(mt / 60, 9, .6, 'black');
@@ -166,20 +167,63 @@ var module = (function() {
 		var ang;
 		var num;
 
-		ctx.font = radius * 0.15 + "px arial";
+		ctx.font = radius * 0.13 + "px arial";
 		ctx.textBaseline = "middle";
 		ctx.textAlign = "center";
+		ctx.fillStyle = '#666';
 
 		for (num = 1; num <= 12; num++){
-			ang = num * Math.PI / 6;
-			ctx.rotate(ang);
-			ctx.translate(0, -radius * 0.8);
-			ctx.rotate(-ang);
-			ctx.fillText(num.toString(), 0, 0);
-			ctx.rotate(ang);
-			ctx.translate(0, radius * 0.8);
-			ctx.rotate(-ang);
+			if (num % 3 === 0) {
+				ang = num * Math.PI / 6;
+				ctx.rotate(ang);
+				ctx.translate(0, -radius * 0.75);
+				ctx.rotate(-ang);
+				ctx.fillText(num, 0, 0);
+				ctx.rotate(ang);
+				ctx.translate(0, radius * 0.75);
+				ctx.rotate(-ang);
+			}
 		}
+	}
+
+	function drawSeconds(ctx, radius) {
+		var i;
+		var angle;
+		var secPos1 = radius - 20;
+		var secPos2 = secPos1 - (secPos1 / 30);
+		var x1;
+		var y1;
+		var x2;
+		var y2;
+
+		for (i = 0; i < 60; i++) {
+			angle = i * (Math.PI * 2) / 60;
+			x1 = Math.cos(angle) * secPos1;
+			y1 = Math.sin(angle) * secPos1;
+			x2 = Math.cos(angle) * secPos2;
+			y2 = Math.sin(angle) * secPos2;
+
+			ctx.beginPath();
+			ctx.moveTo(x1, y1);
+			ctx.lineTo(x2, y2);
+
+			// mark every 5th min
+			if (i % 5 === 0) {
+				ctx.strokeStyle = '#000';
+				ctx.lineWidth = 3;
+			}
+			else {
+				ctx.strokeStyle = '#666';
+				ctx.lineWidth = 1;
+			}
+			ctx.stroke();
+		}
+	}
+
+	function easeBackQuart(t, b, c, d) {
+		var ts = (t /= d) * t;
+		var tc = ts * t;
+		return b + c * (-2 * ts * ts + 10 * tc + -15 * ts + 8 * t);
 	}
 
 	function startTimer() {
